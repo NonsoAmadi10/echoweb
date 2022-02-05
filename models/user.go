@@ -7,7 +7,7 @@ import (
 )
 
 type User struct {
-	Common.Base 
+    Common.Model
 	Email string `gorm:"type:varchar(100);unique_index"`
 	FullName     string
 	Password string
@@ -20,7 +20,6 @@ func (user User) String() string {
 
 func(user *User)BeforeCreate(tx *gorm.DB)(err error){
 	hashed, err := utils.HashPassword(user.Password)
-
 	user.Password = hashed 
 
 	return

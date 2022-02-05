@@ -1,27 +1,29 @@
-package common 
+package common
 
 import (
-	"gorm.io/gorm"
-	"github.com/nu7hatch/gouuid"
+	// "gorm.io/gorm"
 	"time"
+
+	"github.com/gofrs/uuid"
+	"gorm.io/gorm"
 )
 
-// Base Struct will contain columns that cut across all tables 
-type Base struct{
-	ID uuid.UUID `gorm:"type:uuid;default:uuid_generate_v4()"`
+// Base Struct will contain columns that cut across all tables
+type Model struct{
+	ID        uuid.UUID `gorm:"type:uuid;primaryKey" sql:"default:uuid.NewV4()"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	DeletedAt *time.Time `gorm:"index"`
 }
 
+
 // Set Primary Key ID as UUID while saving to database
-func (base *Base)BeforeCreate(scope *gorm.DB)(error){
+func (b *Model)BeforeSave(tx *gorm.DB)( error){
 	u, err := uuid.NewV4()
 	if err != nil {
 		return err
 	}
 
-	scope.Statement.SetColumn("ID", u)
-
+	tx.Statement.SetColumn("ID", u)
 	return nil
 }
