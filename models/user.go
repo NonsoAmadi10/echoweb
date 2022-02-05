@@ -3,6 +3,7 @@ package models
 import (
 	Common "github.com/NonsoAmadi10/echoweb/common"
 	"github.com/NonsoAmadi10/echoweb/utils"
+	"gorm.io/gorm"
 )
 
 type User struct {
@@ -17,7 +18,7 @@ func (user User) String() string {
 	return user.FullName
 }
 
-func(user *User)BeforeCreate()(err error){
+func(user *User)BeforeCreate(tx *gorm.DB)(err error){
 	hashed, err := utils.HashPassword(user.Password)
 
 	user.Password = hashed 
