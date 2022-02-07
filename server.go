@@ -41,8 +41,9 @@ func main(){
 		return c.String(http.StatusOK, "Hello, World!")
 	})
 
-	e.POST("/api/v1/register", controllers.RegisterUser)
-	e.POST("/api/v1/login", controllers.LoginUser)
-
+	api := e.Group("/api/v1")
+	api.GET("/register", controllers.RegisterUser)
+	api.POST("/login", controllers.LoginUser)
+	
 	e.Logger.Fatal(e.Start(":8081"))
 }
