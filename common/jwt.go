@@ -4,7 +4,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/NonsoAmadi10/echoweb/config"
-	uuid "github.com/nu7hatch/gouuid"
+	uuid "github.com/gofrs/uuid"
 )
 
 type JwtCustomClaims struct {

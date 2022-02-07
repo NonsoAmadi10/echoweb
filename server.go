@@ -42,6 +42,7 @@ func main(){
 	})
 
 	e.POST("/api/v1/register", controllers.RegisterUser)
+	e.POST("/api/v1/login", controllers.LoginUser)
 
 	e.Logger.Fatal(e.Start(":8081"))
 }

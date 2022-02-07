@@ -6,6 +6,8 @@ import (
 
 	"github.com/NonsoAmadi10/echoweb/config"
 	"github.com/NonsoAmadi10/echoweb/models"
+	"github.com/NonsoAmadi10/echoweb/utils"
+	"github.com/gofrs/uuid"
 	"github.com/labstack/echo/v4"
 )
 
@@ -15,6 +17,17 @@ type NewUser struct {
 	Password string `json:"password" validate:"required"`
 	Username string `json:"username" validate:"required"`
 }
+
+type LogUser struct {
+	Email string `json:"email" validate:"required,email"`
+	Password string `json:"password" validate:"required,min=5"`
+}
+
+type Data struct {
+	ID uuid.UUID `json:"id"`
+	Email string `json:"email"`
+}
+
 
 func RegisterUser(c echo.Context)(err error){ 
 	reqBody := new(NewUser)
@@ -47,4 +60,34 @@ func RegisterUser(c echo.Context)(err error){
 	}
 	response := user.Email + " " + "has been successfully created"
 	return c.JSON(http.StatusCreated, response)
+}
+
+func LoginUser(c echo.Context)(err error){
+	request := new(LogUser)
+
+	if err := c.Bind(&request); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+
+	if err = c.Validate(request); err != nil {
+		return err
+	}
+
+
+	var user models.User
+	existingUser := config.DB.First(&user, "email = ?", request.Email)
+
+	if existingUser.RowsAffected < 1 {
+		return echo.NewHTTPError(http.StatusBadRequest, "invalid email or password")
+	}
+
+	if matched:= utils.CheckPasswordHash(request.Password ,user.Password); !matched {
+		return echo.NewHTTPError(http.StatusBadRequest, "invalid email or password")
+	}
+	
+	response:= &Data{ID: user.ID, Email: user.Email}
+	
+	return c.JSONPretty(http.StatusOK, response, " ")
+
+
 }
