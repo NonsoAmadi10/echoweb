@@ -7,7 +7,6 @@ import (
 	"github.com/NonsoAmadi10/echoweb/config"
 	"github.com/NonsoAmadi10/echoweb/models"
 	"github.com/NonsoAmadi10/echoweb/utils"
-	"github.com/gofrs/uuid"
 	"github.com/labstack/echo/v4"
 )
 
@@ -24,8 +23,7 @@ type LogUser struct {
 }
 
 type Data struct {
-	ID uuid.UUID `json:"id"`
-	Email string `json:"email"`
+	Token string `json:"token"`
 }
 
 
@@ -85,7 +83,12 @@ func LoginUser(c echo.Context)(err error){
 		return echo.NewHTTPError(http.StatusBadRequest, "invalid email or password")
 	}
 	
-	response:= &Data{ID: user.ID, Email: user.Email}
+	t, err := models.GenerateJWT(&user)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+	}
+
+	response:= &Data{Token: t}
 	
 	return c.JSONPretty(http.StatusOK, response, " ")
 
