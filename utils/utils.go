@@ -15,5 +15,3 @@ func CheckPasswordHash(password string, hash string) bool {
 }
 
 
-
-  
