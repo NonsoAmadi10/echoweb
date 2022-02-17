@@ -15,6 +15,7 @@ type NewUser struct {
 	Email string `json:"email" validate:"required,email"`
 	Password string `json:"password" validate:"required"`
 	Username string `json:"username" validate:"required"`
+	Role string `json:"role" default:"customer"`
 }
 
 type LogUser struct {
@@ -50,6 +51,7 @@ func RegisterUser(c echo.Context)(err error){
 		FullName: reqBody.Fullname,
 		Username: reqBody.Username,
 		Password: reqBody.Password,
+		Role: reqBody.Role,
 	  }
 	
 

@@ -11,7 +11,12 @@ require (
 	gorm.io/gorm v1.22.5
 )
 
-require github.com/go-playground/validator/v10 v10.10.0 // indirect
+require (
+	github.com/go-playground/validator/v10 v10.10.0 // indirect
+	github.com/go-sql-driver/mysql v1.6.0 // indirect
+	gorm.io/datatypes v1.0.5 // indirect
+	gorm.io/driver/mysql v1.2.2 // indirect
+)
 
 require (
 	github.com/go-playground/locales v0.14.0 // indirect

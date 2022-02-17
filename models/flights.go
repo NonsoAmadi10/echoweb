@@ -4,9 +4,8 @@ import (
 	"crypto/rand"
 	"encoding/base64"
 	"math"
-	"time"
-
 	Common "github.com/NonsoAmadi10/echoweb/common"
+	"gorm.io/datatypes"
 	"gorm.io/gorm"
 )
 
@@ -14,8 +13,9 @@ import (
 
 type Flight struct {
 	Common.Model
-	DepartureDate time.Time
-	ReturnDate	  time.Time
+	DepartureDate datatypes.Date
+	ReturnDate	  datatypes.Date 
+	DepatureTime datatypes.Time
 	Origin string `gorm:"type:varchar(100)"`
 	Status string `gorm:"type:varchar(100)"`
 	Destination string `gorm:"type:varchar(100)"`

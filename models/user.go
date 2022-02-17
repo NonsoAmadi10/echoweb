@@ -17,6 +17,7 @@ type User struct {
 	FullName     string
 	Password string
 	Username string `gorm:"type:varchar(100);unique_index"`
+	Role string 
 }
 
 func (user User) String() string {
@@ -37,6 +38,7 @@ func GenerateJWT(user *User) (string, error) {
         FullName: user.FullName,
         Email: user.Email,
 		Username: user.Username,
+		Role: user.Role,
 		StandardClaims: jwt.StandardClaims{
             ExpiresAt: time.Now().Add(time.Hour * 24).Unix(),
         },

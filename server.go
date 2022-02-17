@@ -35,7 +35,7 @@ func main(){
     }))
 
 	// Initialize DB
-	config.SetupDB(&models.User{})
+	config.SetupDB(&models.User{}, &models.Flight{})
 
 	e.GET("/", func(c echo.Context) error {
 		return c.String(http.StatusOK, "Hello, World!")
@@ -44,6 +44,10 @@ func main(){
 	api := e.Group("/api/v1")
 	api.GET("/register", controllers.RegisterUser)
 	api.POST("/login", controllers.LoginUser)
+
+	// Admin Routers
+	admin := api.Group("/flights")
+	admin.POST("", controllers.AddFlight)
 	
 	e.Logger.Fatal(e.Start(":8081"))
 }
