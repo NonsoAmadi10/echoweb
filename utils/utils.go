@@ -1,7 +1,6 @@
 package utils
 
 import (
-	"strings"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -15,8 +14,8 @@ func CheckPasswordHash(password string, hash string) bool {
     return err == nil
 }
 
-func TimeFormatter(tyme string)(h string, m string, s string) {
-    t := strings.Split(tyme, ":")
-    return t[0], t[1], t[2]
-}
 
+type Response struct {
+	Data interface{} `json:"data"`
+	Message string	`json:"message"`
+}
