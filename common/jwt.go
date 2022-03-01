@@ -1,10 +1,12 @@
-package common 
+package common
+
 import (
+
+	"github.com/NonsoAmadi10/echoweb/config"
 	"github.com/golang-jwt/jwt"
+	uuid "github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-	"github.com/NonsoAmadi10/echoweb/config"
-	uuid "github.com/google/uuid"
 )
 
 type JwtCustomClaims struct {
@@ -22,4 +24,15 @@ func JwtMiddleWare() echo.MiddlewareFunc {
 		Claims:     &JwtCustomClaims{},
 		SigningKey: []byte(key),
 	})
+}
+
+func ServerAdmin(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		user := c.Get("user").(*jwt.Token)
+		claims := user.Claims.(*JwtCustomClaims)
+		if claims.Role != "admin" {
+			return echo.ErrUnauthorized
+		}
+		return next(c)
+	}
 }

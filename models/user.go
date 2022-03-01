@@ -13,10 +13,10 @@ import (
 
 type User struct {
     Common.Model
-	Email string `gorm:"type:varchar(100);unique_index"`
+	Email string `gorm:"type:varchar(100);uniqueIndex"`
 	FullName     string
 	Password string
-	Username string `gorm:"type:varchar(100);unique_index"`
+	Username string `gorm:"type:varchar(100);unique;not_null"`
 	Role string 
 }
 

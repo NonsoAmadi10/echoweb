@@ -7,6 +7,7 @@ import (
 	"github.com/NonsoAmadi10/echoweb/handlers"
 	"github.com/NonsoAmadi10/echoweb/models"
 	"github.com/go-playground/validator/v10"
+	"github.com/NonsoAmadi10/echoweb/common"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
@@ -42,11 +43,13 @@ func main(){
 	})
 
 	api := e.Group("/api/v1")
-	api.GET("/register", controllers.RegisterUser)
+	api.POST("/register", controllers.RegisterUser)
 	api.POST("/login", controllers.LoginUser)
 
 	// Admin Routers
 	admin := api.Group("/flights")
+	admin.Use(common.JwtMiddleWare())
+	admin.Use(common.ServerAdmin)
 	admin.POST("", controllers.AddFlight)
 	
 	e.Logger.Fatal(e.Start(":8081"))
