@@ -9,7 +9,7 @@ import (
 
 // Base Struct will contain columns that cut across all tables
 type Model struct{
-	ID     uuid.UUID `json:"id" gorm:"type:uuid;default:uuid_generate_v4()"`
+	ID     uuid.UUID `json:"id" gorm:"type:uuid"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time	`json:"updated_at"`
 	DeletedAt *time.Time `json:"deleted_at" gorm:"index"`
