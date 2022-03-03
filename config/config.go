@@ -1,30 +1,20 @@
 package config
 
 import (
-	"log"
-	"os"
-	"gorm.io/gorm"
+	"github.com/NonsoAmadi10/echoweb/utils"
 	"gorm.io/driver/postgres"
-	"github.com/joho/godotenv"
+	"gorm.io/gorm"
+	_ "github.com/joho/godotenv/autoload"
 )
 
 var DB *gorm.DB 
 
-func GetEnv(key string )string{
 
-	err := godotenv.Load(".env")
-
-	if err != nil {
-		log.Fatalf("Error loading .env file")
-	  }
-	
-	  return os.Getenv(key)
-}
 
 
 func SetupDB(model...interface{}){
 
-	dbString := GetEnv("DATABASE_URL")
+	dbString := utils.GetEnv("DATABASE_URL")
 	db, err := gorm.Open(postgres.Open(dbString), &gorm.Config{})
 
 
@@ -36,3 +26,5 @@ func SetupDB(model...interface{}){
 
 	DB = db
 }
+
+

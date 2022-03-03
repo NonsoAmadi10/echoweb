@@ -3,10 +3,11 @@ package controllers
 import (
 	"fmt"
 	"net/http"
+
 	"github.com/NonsoAmadi10/echoweb/config"
+	"github.com/NonsoAmadi10/echoweb/helpers"
 	"github.com/NonsoAmadi10/echoweb/models"
 	"github.com/NonsoAmadi10/echoweb/utils"
-	 "github.com/NonsoAmadi10/echoweb/helpers"
 	"github.com/labstack/echo/v4"
 )
 

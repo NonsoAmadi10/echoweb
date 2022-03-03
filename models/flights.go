@@ -5,15 +5,13 @@ import (
 	"encoding/base64"
 	"math"
 	"time"
-
-	Common "github.com/NonsoAmadi10/echoweb/common"
 	"gorm.io/gorm"
 )
 
 
 
 type Flight struct {
-	Common.Model
+	Model
 	DepartureDate time.Time `json:"departure_date"`
 	ReturnDate	  *time.Time `json:"return_date" gorm:"type:TIMESTAMP NULL"` 
 	DepatureTime string `json:"departure_time"`

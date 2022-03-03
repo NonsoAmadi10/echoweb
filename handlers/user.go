@@ -1,13 +1,12 @@
 package controllers
 
 import (
-	"fmt"
 	"net/http"
-
 	"github.com/NonsoAmadi10/echoweb/config"
 	"github.com/NonsoAmadi10/echoweb/models"
 	"github.com/NonsoAmadi10/echoweb/utils"
 	"github.com/labstack/echo/v4"
+	"github.com/NonsoAmadi10/echoweb/common"
 )
 
 type NewUser struct {
@@ -42,8 +41,6 @@ func RegisterUser(c echo.Context)(err error){
 	// find user 
 	
 	if err := config.DB.Find(&user, "email = ?", reqBody.Email).RowsAffected; err > 0 {
-		// error handling...
-		fmt.Println(err)
 		return echo.NewHTTPError(http.StatusBadRequest, "email is already used")
 	  }
 	  user = models.User{
@@ -56,10 +53,14 @@ func RegisterUser(c echo.Context)(err error){
 	
 
 	if err := config.DB.Create(&user).Error; err != nil {
-		return err
+		return echo.NewHTTPError(http.StatusConflict, err.Error())
 	}
-	response := user.Email + " " + "has been successfully created"
-	return c.JSON(http.StatusCreated, response)
+	msg := user.Email + " " + "has been successfully created"
+	response := &utils.Response{
+		Message: msg,
+		Data: map[string]string{},
+	}
+	return c.JSONPretty(http.StatusCreated, response, " ")
 }
 
 func LoginUser(c echo.Context)(err error){
@@ -85,12 +86,15 @@ func LoginUser(c echo.Context)(err error){
 		return echo.NewHTTPError(http.StatusBadRequest, "invalid email or password")
 	}
 	
-	t, err := models.GenerateJWT(&user)
+	t, err := common.GenerateJWT(&user)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 
-	response:= &Data{Token: t}
+	response:= &utils.Response{
+		Data: &Data{ Token: t },
+		Message: "login successful!",
+	}
 	
 	return c.JSONPretty(http.StatusOK, response, " ")
 
