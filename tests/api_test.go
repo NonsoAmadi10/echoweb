@@ -16,10 +16,10 @@ func TestMain(t *testing.T) {
 		apitest.New().
 			Handler(app.StartApp()).
 			Post("/api/v1/register").
-			JSON(`{ "fullname": "Amadi Chinonso", "email": "nonsoamadi@aol.com", "password": "chivulena", "role": "customer","username": "holo12"}`).
+			JSON(`{ "fullname": "Amadi Chinonso", "email": "nonsoamadi@abl.com", "password": "chivulena", "role": "customer","username": "hio12"}`).
 			Expect(t).
 			Assert(jsonpath.Present("message")).
-			Assert(jsonpath.Equal("$.message", "nonsoamadi@aol.com has been successfully created")).
+			Assert(jsonpath.Equal("$.message", "nonsoamadi@abl.com has been successfully created")).
 			End()
 	})
 
