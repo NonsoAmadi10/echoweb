@@ -11,56 +11,62 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-
-
-
-
-
 func AddFlight(c echo.Context) (err error) {
 
-		r := new(helpers.CreateFlight)
+	r := new(helpers.CreateFlight)
 
+	if err := c.Bind(&r); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
 
-		if err := c.Bind(&r); err != nil {
-			return echo.NewHTTPError(http.StatusBadRequest, err.Error())
-		}
+	if err = c.Validate(r); err != nil {
+		return err
+	}
 
-		if err = c.Validate(r); err != nil {
-			return err
-		}
+	var flight models.Flight
 
-		var flight models.Flight
+	//format dates
+	formatdepartureDate, returnDate, err := helpers.TimeFormatter(r)
 
-		//format dates
-		formatdepartureDate, returnDate, err := helpers.TimeFormatter(r)
-		
-		// catch err 
+	// catch err
 
-		if err != nil {
-			return echo.NewHTTPError(http.StatusBadRequest, err.Error())
-		}
-		flight = models.Flight{
-			DepartureDate: formatdepartureDate,
-			DepatureTime: r.DepatureTime,
-			OneWay: r.OneWay,
-			Capacity: r.Capacity,
-			Fare: r.Fare,
-			Origin: r.Origin,
-			Destination: r.Destination,
-			Status: "scheduled",
-			ReturnDate: returnDate,
-		}
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+	flight = models.Flight{
+		DepartureDate: formatdepartureDate,
+		DepatureTime:  r.DepatureTime,
+		OneWay:        r.OneWay,
+		Capacity:      r.Capacity,
+		Fare:          r.Fare,
+		Origin:        r.Origin,
+		Destination:   r.Destination,
+		Status:        "scheduled",
+		ReturnDate:    returnDate,
+	}
 
-		if err := config.DB.Create(&flight).Error; err != nil {
-			fmt.Println(err.Error())
-			return err
-		}
+	if err := config.DB.Create(&flight).Error; err != nil {
+		fmt.Println(err.Error())
+		return err
+	}
 
-		response := &utils.Response{
-			Data: &flight,
-			Message: "New Flight details added",
-		}
+	response := &utils.Response{
+		Data:    &flight,
+		Message: "New Flight details added",
+	}
 
+	return c.JSONPretty(http.StatusCreated, response, " ")
+}
 
-		return c.JSONPretty(http.StatusCreated, response, " ")
+func GetAllFlights(e echo.Context) (err error) {
+	var flights []models.Flight
+
+	config.DB.Find(&flights)
+
+	response := &utils.Response{
+		Data:    &flights,
+		Message: "All Flights Details",
+	}
+
+	return e.JSONPretty(http.StatusOK, response, " ")
 }

@@ -4,12 +4,12 @@ import (
 	"net/http"
 
 	"github.com/NonsoAmadi10/echoweb/common"
-	"github.com/NonsoAmadi10/echoweb/handlers"
-	"github.com/NonsoAmadi10/echoweb/models"
 	"github.com/NonsoAmadi10/echoweb/config"
+	controllers "github.com/NonsoAmadi10/echoweb/handlers"
+	"github.com/NonsoAmadi10/echoweb/models"
 	"github.com/go-playground/validator/v10"
-	"github.com/labstack/echo/v4"
 	_ "github.com/joho/godotenv/autoload"
+	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
 
@@ -46,9 +46,10 @@ func StartApp() *echo.Echo {
 	api := e.Group("/api/v1")
 	api.POST("/register", controllers.RegisterUser)
 	api.POST("/login", controllers.LoginUser)
+	api.GET("/flights", controllers.GetAllFlights)
 
 	// Admin Routers
-	admin := api.Group("/flights")
+	admin := api.Group("/admin/flights")
 	admin.Use(common.JwtMiddleWare())
 	admin.Use(common.ServerAdmin)
 	admin.POST("", controllers.AddFlight)
