@@ -46,13 +46,16 @@ func StartApp() *echo.Echo {
 	api := e.Group("/api/v1")
 	api.POST("/register", controllers.RegisterUser)
 	api.POST("/login", controllers.LoginUser)
-	api.GET("/flights", controllers.GetAllFlights)
+	api.GET("/flights", controllers.GetAvailableFlights)
+	api.GET("/flights/:id", controllers.GetFlightInfo)
+	api.PATCH("/flights/:id", controllers.UpdateFlightInfo)
 
 	// Admin Routers
 	admin := api.Group("/admin/flights")
 	admin.Use(common.JwtMiddleWare())
 	admin.Use(common.ServerAdmin)
 	admin.POST("", controllers.AddFlight)
+	admin.GET("", controllers.GetAllFlights)
 
 	return e
 }

@@ -6,22 +6,21 @@ import (
 )
 
 type User struct {
-    Model
-	Email string `gorm:"uniqueIndex"`
-	FullName     string
+	Model
+	Email    string `gorm:"uniqueIndex"`
+	FullName string
 	Password string
 	Username string `gorm:"uniqueIndex;not_null"`
-	Role string 
+	Role     string
 }
 
 func (user User) String() string {
 	return user.FullName
 }
 
-func(user *User)BeforeCreate(tx *gorm.DB)(err error){
+func (user *User) BeforeSave(tx *gorm.DB) (err error) {
 	hashed, err := utils.HashPassword(user.Password)
-	user.Password = hashed 
+	user.Password = hashed
 
 	return
 }
-

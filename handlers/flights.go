@@ -33,6 +33,7 @@ func AddFlight(c echo.Context) (err error) {
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
+
 	flight = models.Flight{
 		DepartureDate: formatdepartureDate,
 		DepatureTime:  r.DepatureTime,
@@ -58,7 +59,7 @@ func AddFlight(c echo.Context) (err error) {
 	return c.JSONPretty(http.StatusCreated, response, " ")
 }
 
-func GetAllFlights(e echo.Context) (err error) {
+func GetAllFlights(c echo.Context) (err error) {
 	var flights []models.Flight
 
 	config.DB.Find(&flights)
@@ -68,5 +69,58 @@ func GetAllFlights(e echo.Context) (err error) {
 		Message: "All Flights Details",
 	}
 
-	return e.JSONPretty(http.StatusOK, response, " ")
+	return c.JSONPretty(http.StatusOK, response, " ")
+}
+
+func GetAvailableFlights(c echo.Context) (err error) {
+	var flights []models.Flight
+
+	config.DB.Where("status = ?", "scheduled").Find(&flights)
+
+	response := &utils.Response{
+		Data:    &flights,
+		Message: "All Flights Details",
+	}
+	return c.JSONPretty(http.StatusOK, response, " ")
+}
+
+func GetFlightInfo(c echo.Context) (err error) {
+	id := c.Param("id")
+
+	var flight models.Flight
+
+	config.DB.First(&flight, "id = ?", id)
+
+	response := &utils.Response{
+		Data:    &flight,
+		Message: "flight details returned successfully",
+	}
+	return c.JSONPretty(http.StatusOK, response, " ")
+}
+
+func UpdateFlightInfo(c echo.Context) (err error) {
+
+	id := c.Param("id")
+	r := new(helpers.UpdateFlight)
+
+	var flight models.Flight
+	if err := c.Bind(&r); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+
+	if r.Status != "cancelled" || r.Status != "completed" {
+		return echo.NewHTTPError(http.StatusBadRequest, "status can only be updated to completed or cancelled")
+	}
+	if err := config.DB.Where("id = ?", id).First(&flight).Error; err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "record not found!")
+	}
+
+	config.DB.Model(&flight).Updates(models.Flight{Status: r.Status})
+
+	response := &utils.Response{
+		Data:    &flight,
+		Message: "flight details updated successfully",
+	}
+	return c.JSONPretty(http.StatusOK, response, " ")
+
 }
